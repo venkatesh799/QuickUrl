@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickLink - URL Shortener</title>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-light: #a29bfe;
+            --secondary: #00b894;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --gray: #dfe6e9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 650px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            font-size: 36px;
+            color: var(--primary);
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+
+        .tagline {
+            color: #636e72;
+            font-size: 17px;
+            margin-bottom: 35px;
+            max-width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .url-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--gray);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+        }
+
+        .action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(108, 92, 231, 0.3);
+        }
+
+        .action-btn:hover {
+            background-color: #5649d1;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(108, 92, 231, 0.4);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        .result-card {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f9f9ff;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+            display: none;
+            text-align: left;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-title {
+            color: #636e72;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .short-url-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .short-url {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 600;
+            word-break: break-all;
+            text-decoration: none;
+            flex-grow: 1;
+        }
+
+        .short-url:hover {
+            text-decoration: underline;
+            color: #5649d1;
+        }
+
+        .copy-btn {
+            background-color: var(--primary-light);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 15px;
+            white-space: nowrap;
+        }
+
+        .stats-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 10px;
+            white-space: nowrap;
+        }
+
+        .stats-btn:hover {
+            background-color: #00a884;
+        }
+
+        .click-count {
+            margin-top: 10px;
+            padding: 8px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            font-size: 16px; /* Increased font size */
+            font-weight: bold; /* Makes the text bold */
+            color: #636e72;
+            display: none;
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            gap: 20px;
+        }
+
+        .feature {
+            flex: 1;
+            min-width: 150px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-icon {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .feature-desc {
+            font-size: 14px;
+            color: #636e72;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+
+            .tagline {
+                max-width: 100%;
+            }
+
+            .features {
+                flex-direction: column;
+            }
+
+            .short-url-container {
+                flex-wrap: wrap;
+            }
+
+            .copy-btn, .stats-btn {
+                margin-top: 10px;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="logo">
+        <div class="logo-icon">🔗</div>
+        <div class="logo-text">QuickLink</div>
+    </div>
+    <div class="tagline">Transform long, complicated URLs into short, memorable links with our free URL shortener</div>
+
+    <div class="input-container">
+        <input type="text" id="longUrl" class="url-input" placeholder="Paste your long URL here...">
+    </div>
+
+    <button id="shortenBtn" class="action-btn">Shorten URL</button>
+
+    <div class="result-card" id="result">
+        <div class="result-title">Your shortened URL:</div>
+        <div class="short-url-container">
+            <a href="#" id="shortUrl" class="short-url" target="_blank"></a>
+            <button id="copyBtn" class="copy-btn">Copy</button>
+            <button id="statsBtn" class="stats-btn">Show Clicks</button>
+        </div>
+        <div id="clickCount" class="click-count">
+            Total clicks: <span id="clickCountValue">0</span>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="feature">
+            <div class="feature-icon">⚡</div>
+            <div class="feature-title">Lightning Fast</div>
+            <div class="feature-desc">Instant URL shortening with our optimized platform</div>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">📊</div>
+            <div class="feature-title">Analytics</div>
+            <div class="feature-desc">Track clicks</div>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">🔒</div>
+            <div class="feature-title">Secure</div>
+            <div class="feature-desc">HTTPS encryption for all shortened links</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE_URL = 'http://localhost:8081';
+
+    document.getElementById('shortenBtn').addEventListener('click', shortenUrl);
+    document.getElementById('longUrl').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') shortenUrl();
+    });
+
+    async function shortenUrl() {
+        const longUrl = document.getElementById('longUrl').value.trim();
+        const btn = document.getElementById('shortenBtn');
+        const resultElement = document.getElementById('result');
+
+        if (!longUrl) {
+            alert('Please enter a URL to shorten');
+            return;
+        }
+
+        if (!isValidUrl(longUrl)) {
+            alert('Please enter a valid URL (include http:// or https://)');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Shortening...';
+        resultElement.style.display = 'none';
+        document.getElementById('clickCount').style.display = 'none';
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/url`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ longUrl: longUrl })
+            });
+
+            if (!response.ok) {
+                const error = await response.text();
+                throw new Error(error || 'Failed to shorten URL');
+            }
+
+            const shortUrl = await response.text();
+            displayResult(shortUrl);
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message || 'Failed to shorten the URL. Please try again.');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Shorten URL';
+        }
+    }
+
+    function displayResult(shortUrl) {
+        const resultElement = document.getElementById('result');
+        const shortUrlElement = document.getElementById('shortUrl');
+
+        const fullShortUrl = shortUrl.startsWith('http')
+            ? shortUrl
+            : `${API_BASE_URL}/${shortUrl}`;
+
+        shortUrlElement.textContent = fullShortUrl;
+        shortUrlElement.href = fullShortUrl;
+        resultElement.style.display = 'block';
+
+        resultElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    document.getElementById('copyBtn').addEventListener('click', function() {
+        const shortUrl = document.getElementById('shortUrl').textContent;
+        navigator.clipboard.writeText(shortUrl).then(() => {
+            const copyBtn = document.getElementById('copyBtn');
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyBtn.textContent = 'Copy';
+            }, 2000);
+        });
+    });
+
+    document.getElementById('statsBtn').addEventListener('click', async function() {
+    const shortUrl = document.getElementById('shortUrl').textContent;
+    // Extract just the short code (remove domain and slashes)
+    const shortCode = shortUrl.split('/').pop();
+    const statsBtn = document.getElementById('statsBtn');
+    const clickCountElement = document.getElementById('clickCount');
+
+    statsBtn.disabled = true;
+    statsBtn.textContent = 'Loading...';
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/clicks/${shortCode}`);
+
+        if (!response.ok) {
+            throw new Error('Failed to get click count');
+        }
+
+        // Parse the response as text first to see what we're getting
+        const responseText = await response.text();
+        console.log("Raw response:", responseText); // Debug log
+
+        // Try to parse as number
+        const clickCount = parseInt(responseText);
+
+        if (isNaN(clickCount)) {
+            throw new Error('Invalid click count format');
+        }
+
+        document.getElementById('clickCountValue').textContent = clickCount;
+        clickCountElement.style.display = 'block';
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to get click count: ' + error.message);
+    } finally {
+        statsBtn.disabled = false;
+        statsBtn.textContent = 'Show Clicks';
+    }
+});
+
+    function isValidUrl(string) {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+</script>
+</body>
+</html>
